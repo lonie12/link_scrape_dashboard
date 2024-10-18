@@ -51,8 +51,8 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="auth-content-wrapper ">
-      <Card className="auth-content mx-auto">
+    <div className="auth-content-wrapper px-3">
+      <Card className="w-full sm:max-w-[420px] mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>

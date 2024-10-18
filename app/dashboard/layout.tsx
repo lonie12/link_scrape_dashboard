@@ -1,5 +1,5 @@
 import Header from "@/components/app/header";
-import Sidebar from "@/components/app/sidebar";
+import Sidebar from "@/components/app/sidebar/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import type { Metadata } from "next";
 
