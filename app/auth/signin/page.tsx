@@ -13,15 +13,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Google } from "iconsax-react";
 import { useRouter } from "next/navigation";
-import { FormEvent } from "react";
+import { FormEvent, MouseEvent } from "react";
+import { signIn } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 
 const SignInPage = () => {
+  const { toast } = useToast();
   const router = useRouter();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    event.stopPropagation();
-    router.push("/dashboard");
+    try {
+      const formData = new FormData(event.currentTarget);
+      const res = await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        redirect: false,
+      });
+      if (res?.error) {
+        return toast({ variant: "error", description: res?.error.toString() });
+      }
+      if (res?.ok) {
+        toast({
+          variant: "success",
+          description: "You are successfuly logged in",
+        });
+        return router.push("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleGoogleLogin = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
@@ -39,6 +65,7 @@ const SignInPage = () => {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
                 required
@@ -56,15 +83,20 @@ const SignInPage = () => {
               </div>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="********"
                 required
               />
             </div>
             <Button type="submit" className="w-full">
-              Login
+              Sign In
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button
+              onClick={handleGoogleLogin}
+              variant="outline"
+              className="w-full"
+            >
               <Google /> Login with Google
             </Button>
           </form>

@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -5,8 +7,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Google } from "iconsax-react";
+import { register } from "@/actions/register";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
 
 const SignUpPage = () => {
+  const router = useRouter();
+  const ref = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      const res = await register({
+        name: formData.get("name"),
+        email: formData.get("email"),
+        password: formData.get("password"),
+      });
+      ref.current?.reset();
+      if (res?.error) return alert(res.error);
+      return router.push("/");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="h-screen w-full lg:grid  lg:grid-cols-2">
       <div className="flex items-center justify-center py-12">
@@ -17,11 +40,12 @@ const SignUpPage = () => {
               Signup to continue using Linkscrape
             </p>
           </div>
-          <div className="grid gap-4">
+          <form ref={ref} action={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
+                name="name"
                 type="text"
                 placeholder="Jeanne Doe"
                 required
@@ -31,6 +55,7 @@ const SignUpPage = () => {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
                 required
@@ -40,6 +65,7 @@ const SignUpPage = () => {
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="********"
                 required
@@ -51,7 +77,7 @@ const SignUpPage = () => {
             <Button variant="outline" className="w-full">
               <Google /> Continue with Google
             </Button>
-          </div>
+          </form>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link href="/auth/signin" className="underline">

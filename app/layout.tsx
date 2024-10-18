@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { AuthProvider } from "./providers/authProvider";
+import { AuthProvider } from "../providers/authProvider";
+import { ThemeProvider } from "@/providers/themeProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const spaceGrotesk = localFont({
   src: "./fonts/SpaceGrotesk.ttf",
@@ -21,7 +23,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.className} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
