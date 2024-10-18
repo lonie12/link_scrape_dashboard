@@ -26,13 +26,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "../ui/input";
-import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { userProfile } from "@/helpers/constants";
+import { signOut } from "next-auth/react";
 
 export default function Header() {
   const { setTheme } = useTheme();
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <header className="top-0 z-30 flex h-14 items-center gap-4 bg-background px-4 sm:static sm:h-auto sm:bg-transparent sm:py-[10px] sm:px-6 border-b">
@@ -144,7 +144,7 @@ export default function Header() {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => router.push("/auth/signin")}>
+          <DropdownMenuItem onClick={() => signOut()}>
             <LogOut /> Logout
           </DropdownMenuItem>
         </DropdownMenuContent>

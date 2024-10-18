@@ -21,39 +21,29 @@ export default function Sidebar() {
           <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
           <span className="sr-only">Acme Inc</span>
         </Link>
-        <SidebarItem path="/dashboard">
+        <SidebarItem path="" title="Dashboard">
           <Home className="h-5 w-5" />
           <span className="sr-only">Dashboard</span>
         </SidebarItem>
-        <SidebarItem path="/dashboard/orders">
-          <ShoppingCart className="h-5 w-5" />
-          <span className="sr-only">Orders</span>
-        </SidebarItem>
-        <SidebarItem path="/dashboard/products">
-          <Package className="h-5 w-5" />
-          <span className="sr-only">Products</span>
-        </SidebarItem>
-        <SidebarItem path="/dashboard/products">
+        <SidebarItem path="/customers" title="Customers">
           <Users2 className="h-5 w-5" />
           <span className="sr-only">Customers</span>
         </SidebarItem>
-        <SidebarItem path="/dashboard/analytics">
+        <SidebarItem path="/orders" title="Orders">
+          <ShoppingCart className="h-5 w-5" />
+          <span className="sr-only">Orders</span>
+        </SidebarItem>
+        <SidebarItem path="/products" title="Products">
+          <Package className="h-5 w-5" />
+          <span className="sr-only">Products</span>
+        </SidebarItem>
+        <SidebarItem path="/analytics" title="Analytics">
           <LineChart className="h-5 w-5" />
           <span className="sr-only">Analytics</span>
         </SidebarItem>
-        {/* <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              href="#"
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-            >
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent side="right">Analytics</TooltipContent>
-        </Tooltip> */}
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-        <SidebarItem path="/dashboard/settings">
+        <SidebarItem path="/dashboard/settings" title="Settings">
           <Settings className="h-5 w-5" />
           <span className="sr-only">Settings</span>
         </SidebarItem>
