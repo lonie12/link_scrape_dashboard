@@ -28,6 +28,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "../ui/input";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { userProfile } from "@/helpers/constants";
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -129,11 +130,11 @@ export default function Header() {
             className="overflow-hidden rounded-full"
           >
             <Image
-              src="https://img.freepik.com/photos-gratuite/portrait-homme-africain-origine-dans-studio_53876-48903.jpg?t=st=1729213350~exp=1729216950~hmac=74a17a11f029341bea8a65593e601fcf0480066b68def275b24833c4912899f7&w=826"
+              src={userProfile}
               width={36}
               height={36}
               alt="Avatar"
-              className="overflow-hidden rounded-full"
+              className="object-cover h-full w-full overflow-hidden rounded-full"
             />
           </Button>
         </DropdownMenuTrigger>
