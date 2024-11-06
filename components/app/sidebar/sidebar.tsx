@@ -1,13 +1,5 @@
 import Link from "next/link";
-import {
-  Home,
-  LineChart,
-  Package,
-  Package2,
-  Settings,
-  ShoppingCart,
-  Users2,
-} from "lucide-react";
+import { Home, LineChart, Package2, Settings, Users2 } from "lucide-react";
 import SidebarItem from "./sidebar-item";
 
 export default function Sidebar() {
@@ -25,17 +17,9 @@ export default function Sidebar() {
           <Home className="h-5 w-5" />
           <span className="sr-only">Dashboard</span>
         </SidebarItem>
-        <SidebarItem path="/customers" title="Customers">
+        <SidebarItem path="/prospects" title="Customers">
           <Users2 className="h-5 w-5" />
           <span className="sr-only">Customers</span>
-        </SidebarItem>
-        <SidebarItem path="/orders" title="Orders">
-          <ShoppingCart className="h-5 w-5" />
-          <span className="sr-only">Orders</span>
-        </SidebarItem>
-        <SidebarItem path="/products" title="Products">
-          <Package className="h-5 w-5" />
-          <span className="sr-only">Products</span>
         </SidebarItem>
         <SidebarItem path="/analytics" title="Analytics">
           <LineChart className="h-5 w-5" />

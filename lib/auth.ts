@@ -1,10 +1,9 @@
-import { connectDB } from "@/lib/mongodb";
-import User from "@/models/User";
+import axios from "axios";
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 import credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import { API_ENDPOINT } from "./env";
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
 
 export const authOptions: NextAuthOptions = {
@@ -17,18 +16,17 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await connectDB();
-        const user = await User.findOne({
-          email: credentials?.email,
-        }).select("+password");
-        if (!user) throw new Error("Wrong Email");
-        const passwordMatch = await bcrypt.compare(
-          credentials!.password,
-          user.password
-        );
-        if (!passwordMatch) throw new Error("Wrong Password");
-        console.log(user);
-        return user;
+        try {
+          const result = await axios.post(`${API_ENDPOINT!}/auth/login`, {
+            email: credentials?.email,
+            password: credentials?.password,
+          });
+          if (result.status !== 200) return null;
+          return result.data;
+        } catch (err) {
+          console.error(err);
+          return null;
+        }
       },
     }),
     GoogleProvider({
@@ -36,7 +34,16 @@ export const authOptions: NextAuthOptions = {
       clientSecret: GOOGLE_CLIENT_SECRET as string,
     }),
   ],
-  session: { strategy: "jwt" },
+  // session: { strategy: "jwt" },
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+    async session({ session, token }) {
+      session.user = token;
+      return session;
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/signin",

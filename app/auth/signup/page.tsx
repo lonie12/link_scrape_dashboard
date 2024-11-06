@@ -10,6 +10,7 @@ import { Google } from "iconsax-react";
 import { register } from "@/actions/register";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { errorToast } from "@/lib/utils";
 
 const SignUpPage = () => {
   const router = useRouter();
@@ -18,12 +19,12 @@ const SignUpPage = () => {
   const handleSubmit = async (formData: FormData) => {
     try {
       const res = await register({
-        name: formData.get("name"),
-        email: formData.get("email"),
-        password: formData.get("password"),
+        name: formData.get("name")?.valueOf(),
+        email: formData.get("email")?.valueOf(),
+        password: formData.get("password")?.valueOf(),
       });
+      if (res?.error) return errorToast(res.error);
       ref.current?.reset();
-      if (res?.error) return alert(res.error);
       return router.push("/");
     } catch (err) {
       console.error(err);

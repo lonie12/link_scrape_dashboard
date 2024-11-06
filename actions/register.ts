@@ -1,32 +1,38 @@
 "use server";
-import { connectDB } from "@/lib/mongodb";
-import User from "@/models/User";
-import bcrypt from "bcryptjs";
+
+import { API_ENDPOINT } from "@/lib/env";
+import axios, { isAxiosError } from "axios";
 
 export const register = async (values: {
-  email: string;
-  password: string;
-  name: string;
+  email?: string | object;
+  password?: string | object;
+  name?: string | object;
 }) => {
-  const { email, password, name } = values;
-  console.log(values);
   try {
-    await connectDB();
-    const userFound = await User.findOne({ email });
-    if (userFound) {
-      return {
-        error: "Email already exists!",
-      };
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
-      name,
+    const { email, password, name } = values;
+    const result = await axios.post(`${API_ENDPOINT!}/auth/register`, {
       email,
-      password: hashedPassword,
+      name,
+      password,
     });
-    const savedUser = await user.save();
-    console.log(savedUser);
+    console.log(result);
+    if (result.status == 201) {
+      return result.data;
+    } else {
+      return { error: result.data.message };
+    }
   } catch (e) {
     console.log(e);
+    if (isAxiosError(e)) {
+      console.log(e.status);
+      switch (e.status) {
+        case 500:
+          return { error: "Internal server error" };
+        case 409:
+          return { error: "User already exists" };
+        default:
+          return { error: "Registration failed" };
+      }
+    }
   }
 };

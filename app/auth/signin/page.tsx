@@ -15,10 +15,9 @@ import { Google } from "iconsax-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, MouseEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useToast } from "@/hooks/use-toast";
+import { errorToast, okToast } from "@/lib/utils";
 
 const SignInPage = () => {
-  const { toast } = useToast();
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -30,16 +29,11 @@ const SignInPage = () => {
         password: formData.get("password"),
         redirect: false,
       });
-      if (res?.error) {
-        return toast({ variant: "error", description: res?.error.toString() });
+      if (res?.error && res.status === 401) {
+        return errorToast("Invalid credentials");
       }
-      if (res?.ok) {
-        toast({
-          variant: "success",
-          description: "You are successfuly logged in",
-        });
-        return router.push("/");
-      }
+      okToast("Logged in successfuly");
+      return router.push("/");
     } catch (err) {
       console.error(err);
     }
@@ -47,7 +41,7 @@ const SignInPage = () => {
 
   const handleGoogleLogin = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    signIn("google", { callbackUrl: "/" });
+    signIn("google", { callbackUrl: "/dashboard" });
   };
 
   return (

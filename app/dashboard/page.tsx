@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,6 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { userProfile } from "@/helpers/constants";
+// import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   return (
