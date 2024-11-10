@@ -15,16 +15,13 @@ export const register = async (values: {
       name,
       password,
     });
-    console.log(result);
     if (result.status == 201) {
       return result.data;
     } else {
       return { error: result.data.message };
     }
   } catch (e) {
-    console.log(e);
     if (isAxiosError(e)) {
-      console.log(e.status);
       switch (e.status) {
         case 500:
           return { error: "Internal server error" };
