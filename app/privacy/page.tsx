@@ -1,7 +1,7 @@
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-3xl">
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-3xl text-black">
         <h1 className="text-3xl font-bold text-center text-blue-800 mb-6">
           Privacy Policy
         </h1>
