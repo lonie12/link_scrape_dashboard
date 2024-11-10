@@ -16,14 +16,14 @@ const SignUpPage = () => {
   const router = useRouter();
   const ref = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (formData: FormData): Promise<void> => {
     try {
       const res = await register({
         name: formData.get("name")?.valueOf(),
         email: formData.get("email")?.valueOf(),
         password: formData.get("password")?.valueOf(),
       });
-      if (res?.error) return errorToast(res.error);
+      if (res?.error) errorToast(res.error);
       ref.current?.reset();
       return router.push("/");
     } catch (err) {
