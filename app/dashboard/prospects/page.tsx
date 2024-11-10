@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -18,8 +20,24 @@ import {
 } from "@/components/ui/card";
 import { userProfile } from "@/helpers/constants";
 import { CustomTableRow } from "@/components/app/table/table-row";
+import { listProspects } from "@/data/prospects";
+import { useQuery } from "@tanstack/react-query";
 
 export default function CustomerPage() {
+  const {
+    data: listQuery,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryFn: async () => await listProspects(),
+    queryKey: ["movies"], //Array according to Documentation
+  });
+
+  if (isLoading) return <span>Loading ...</span>;
+  if (isError) return <div>Sorry There was an Error </div>;
+
+  console.log(listQuery);
+
   return (
     <Card x-chunk="dashboard-06-chunk-0">
       <CardHeader>
@@ -35,39 +53,43 @@ export default function CustomerPage() {
               <TableHead className="hidden sm:table-cell">
                 <span className="sr-only">Image</span>
               </TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Price</TableHead>
+              <TableHead>Username</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Job Title</TableHead>
+              {/* <TableHead className="hidden md:table-cell">Price</TableHead>
               <TableHead className="hidden md:table-cell">
                 Total Sales
-              </TableHead>
-              <TableHead className="hidden md:table-cell">Created at</TableHead>
+              </TableHead> */}
+              <TableHead className="hidden md:table-cell">Saved at</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <CustomTableRow>
-              <TableCell className="hidden sm:table-cell">
-                <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src={userProfile} alt="Avatar" />
-                  <AvatarFallback>OM</AvatarFallback>
-                </Avatar>
-              </TableCell>
-              <TableCell className="font-medium">
-                Laser Lemonade Machine
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">Draft</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$499.99</TableCell>
-              <TableCell className="hidden md:table-cell">25</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2023-07-12 10:42 AM
-              </TableCell>
-            </CustomTableRow>
-            <CustomTableRow>
+            {listQuery &&
+              listQuery?.data &&
+              listQuery?.data?.map((item: Prospect, idx: number) => (
+                <CustomTableRow key={idx}>
+                  <TableCell className="hidden sm:table-cell">
+                    <Avatar className="hidden h-9 w-9 sm:flex">
+                      <AvatarImage src={userProfile} alt="Avatar" />
+                      <AvatarFallback>OM</AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell className="font-medium">{item?.p_uname}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{item?.p_email}</Badge>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {item?.p_title}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {item?.createdAt ?? "Not defined"}
+                  </TableCell>
+                </CustomTableRow>
+              ))}
+            {/* <CustomTableRow>
               <TableCell className="hidden sm:table-cell">
                 <Avatar className="hidden h-9 w-9 sm:flex">
                   <AvatarImage src={userProfile} alt="Avatar" />
@@ -81,7 +103,6 @@ export default function CustomerPage() {
                 <Badge variant="outline">Active</Badge>
               </TableCell>
               <TableCell className="hidden md:table-cell">$129.99</TableCell>
-              <TableCell className="hidden md:table-cell">100</TableCell>
               <TableCell className="hidden md:table-cell">
                 2023-10-18 03:21 PM
               </TableCell>
@@ -100,11 +121,10 @@ export default function CustomerPage() {
                 <Badge variant="secondary">Draft</Badge>
               </TableCell>
               <TableCell className="hidden md:table-cell">$2.99</TableCell>
-              <TableCell className="hidden md:table-cell">0</TableCell>
               <TableCell className="hidden md:table-cell">
                 2023-12-25 11:59 PM
               </TableCell>
-            </CustomTableRow>
+            </CustomTableRow> */}
           </TableBody>
         </Table>
       </CardContent>
@@ -116,18 +136,3 @@ export default function CustomerPage() {
     </Card>
   );
 }
-
-export const getStaticProps = async () => {
-  // Call an external API endpoint to get posts.
-  // You can use any data fetching library
-  const res = await fetch("https://.../posts");
-  const posts = await res.json();
-
-  // By returning { props: { posts } }, the Blog component
-  // will receive `posts` as a prop at build time
-  return {
-    props: {
-      posts,
-    },
-  };
-};

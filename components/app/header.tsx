@@ -24,7 +24,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Input } from "../ui/input";
 import { useTheme } from "next-themes";
 import { userProfile } from "@/helpers/constants";
@@ -43,7 +48,12 @@ export default function Header() {
             <span className="sr-only">Toggle Menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="sm:max-w-xs">
+        <SheetContent
+          aria-describedby="sheet content"
+          side="left"
+          className="sm:max-w-xs"
+        >
+          <SheetTitle></SheetTitle>
           <nav className="grid gap-6 text-lg font-medium">
             <Link
               href="#"
@@ -92,7 +102,7 @@ export default function Header() {
       </Sheet>
       <div className="flex items-center gap-3">
         <AlignJustify size={22} className="hidden sm:block cursor-pointer" />
-        <h3>LinkScrape</h3>
+        <h3 className="hidden lg:block">LinkScrape</h3>
       </div>
       <div className="relative ml-auto flex-1 md:grow-0">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />

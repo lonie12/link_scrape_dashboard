@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "../providers/authProvider";
 import { ThemeProvider } from "@/providers/themeProvider";
 import { Toaster } from "@/components/ui/toaster";
+import ReactQueryProvider from "@/providers/queryClientProvider";
 
 const spaceGrotesk = localFont({
   src: "./fonts/SpaceGrotesk.ttf",
@@ -30,7 +31,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <ReactQueryProvider>{children}</ReactQueryProvider>
             <Toaster />
           </ThemeProvider>
         </AuthProvider>
