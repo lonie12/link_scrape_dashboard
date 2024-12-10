@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -18,36 +17,74 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { userProfile } from "@/helpers/constants";
 import { CustomTableRow } from "@/components/app/table/table-row";
 import { listProspects } from "@/data/prospects";
 import { useQuery } from "@tanstack/react-query";
+import UserAvatar from "@/components/app/avatar";
+import { useState } from "react";
+import ProspectListSkeleton from "@/components/app/skeleton/prospects-list-skeleton";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export default function CustomerPage() {
+  const [queryPage, setQueryPage] = useState(1);
+
   const {
     data: listQuery,
     isLoading,
+    isSuccess,
     isError,
+    isRefetching,
+    refetch: getPaginate,
   } = useQuery({
-    queryFn: async () => await listProspects(),
-    queryKey: ["movies"], //Array according to Documentation
+    queryFn: async () => await listProspects({ page: queryPage }),
+    queryKey: [`prospects-${queryPage}`],
   });
 
-  if (isLoading) return <span>Loading ...</span>;
-  if (isError) return <div>Sorry There was an Error </div>;
+  //  handle next and prev
+  const handleNext = () => {
+    if (queryPage < listQuery?.data?.totalPages) {
+      // scroll to the header of table
+      const tableHeaderScrollTo = document.querySelector("thead");
+      tableHeaderScrollTo!.scrollIntoView();
 
-  console.log(listQuery);
+      // move page to next
+      setQueryPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (queryPage > 1) {
+      // scroll to the header of table
+      const tableHeaderScrollTo = document.querySelector("thead");
+      tableHeaderScrollTo!.scrollIntoView();
+
+      // move page to next
+      setQueryPage((prev) => prev - 1);
+    }
+  };
 
   return (
     <Card x-chunk="dashboard-06-chunk-0">
-      <CardHeader>
-        <CardTitle>Customers</CardTitle>
+      <CardHeader className="border flex ">
+        <div className="w-full flex items-center justify-center">
+          <CardTitle>Customers</CardTitle>
+
+          <div className="relative ml-auto md:grow-0">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search..."
+              className="rounded-sm w-full bg-background pl-8 md:w-[200px] lg:w-[336px]"
+            />
+          </div>
+        </div>
         <CardDescription>
           Manage your customers and view their order details.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className="w-full">
           <TableHeader>
             <TableRow>
               <TableHead className="hidden sm:table-cell">
@@ -56,82 +93,89 @@ export default function CustomerPage() {
               <TableHead>Username</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Job Title</TableHead>
-              {/* <TableHead className="hidden md:table-cell">Price</TableHead>
-              <TableHead className="hidden md:table-cell">
-                Total Sales
-              </TableHead> */}
               <TableHead className="hidden md:table-cell">Saved at</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {listQuery &&
-              listQuery?.data &&
-              listQuery?.data?.map((item: Prospect, idx: number) => (
-                <CustomTableRow key={idx}>
+          <TableBody
+            className={`${isLoading || isRefetching ? "animate-pulse" : ""}`}
+          >
+            {isLoading || isRefetching ? (
+              <ProspectListSkeleton />
+            ) : isSuccess && listQuery?.data?.prospects ? (
+              listQuery?.data?.prospects?.map((item: Prospect, idx: number) => (
+                <CustomTableRow prospect={item} key={idx}>
                   <TableCell className="hidden sm:table-cell">
-                    <Avatar className="hidden h-9 w-9 sm:flex">
-                      <AvatarImage src={userProfile} alt="Avatar" />
-                      <AvatarFallback>OM</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar />
                   </TableCell>
                   <TableCell className="font-medium">{item?.p_uname}</TableCell>
                   <TableCell>
                     <Badge variant="outline">{item?.p_email}</Badge>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {item?.p_title}
+                  <TableCell className="hidden md:table-cell max-w-[320px] truncate">
+                    {item?.p_title?.trim()}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {item?.createdAt ?? "Not defined"}
                   </TableCell>
                 </CustomTableRow>
-              ))}
-            {/* <CustomTableRow>
-              <TableCell className="hidden sm:table-cell">
-                <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src={userProfile} alt="Avatar" />
-                  <AvatarFallback>OM</AvatarFallback>
-                </Avatar>
-              </TableCell>
-              <TableCell className="font-medium">
-                Hypernova Headphones
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">Active</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$129.99</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2023-10-18 03:21 PM
-              </TableCell>
-            </CustomTableRow>
-            <CustomTableRow>
-              <TableCell className="hidden sm:table-cell">
-                <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src={userProfile} alt="Avatar" />
-                  <AvatarFallback>OM</AvatarFallback>
-                </Avatar>
-              </TableCell>
-              <TableCell className="font-medium">
-                TechTonic Energy Drink
-              </TableCell>
-              <TableCell>
-                <Badge variant="secondary">Draft</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">$2.99</TableCell>
-              <TableCell className="hidden md:table-cell">
-                2023-12-25 11:59 PM
-              </TableCell>
-            </CustomTableRow> */}
+              ))
+            ) : (
+              <></>
+            )}
           </TableBody>
         </Table>
+        {isSuccess &&
+          !isRefetching &&
+          listQuery?.data?.prospects?.length <= 0 && (
+            <div className="mx-auto py-8 flex items-center justify-center gap-3">
+              You have no scraped data
+              <button
+                className="border px-4 py-2 rounded-md"
+                onClick={() => getPaginate()}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+        {isError && (
+          <div className="mx-auto py-8 flex items-center justify-center gap-3">
+            Ouppss !!! There is an error.
+            <button
+              className="border px-4 py-2 rounded-md"
+              onClick={() => getPaginate()}
+            >
+              Try again
+            </button>
+          </div>
+        )}
       </CardContent>
       <CardFooter>
-        <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
-        </div>
+        {isSuccess && listQuery?.data?.prospects.length > 0 && (
+          <div className="w-full flex flex-row items-center justify-between">
+            <button
+              disabled={queryPage == 1}
+              className="border-3 border-[#8b8b8b35] text-dash capitalize border px-4 py-1 rounded-md bg-blue-600 disabled:bg-gray-400 disabled:text-slate-900 text-white"
+              onClick={handlePrev}
+            >
+              Previous
+            </button>
+
+            <p>
+              Page {queryPage} of {listQuery?.data?.totalPages}
+            </p>
+
+            <button
+              disabled={queryPage == listQuery?.data?.totalPages}
+              className="border-3 border-[#8b8b8b35] text-dash capitalize border px-4 py-1 rounded-md bg-blue-600 disabled:bg-gray-400 disabled:text-slate-900 text-white"
+              onClick={handleNext}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

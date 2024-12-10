@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Home, LineChart, Package2, Settings, Users2 } from "lucide-react";
+import { LineChart, Package2, Users2 } from "lucide-react";
 import SidebarItem from "./sidebar-item";
+import { Logout } from "iconsax-react";
 
 export default function Sidebar() {
   return (
@@ -13,10 +14,10 @@ export default function Sidebar() {
           <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
           <span className="sr-only">Acme Inc</span>
         </Link>
-        <SidebarItem path="" title="Dashboard">
+        {/* <SidebarItem path="" title="Dashboard">
           <Home className="h-5 w-5" />
           <span className="sr-only">Dashboard</span>
-        </SidebarItem>
+        </SidebarItem> */}
         <SidebarItem path="/prospects" title="Customers">
           <Users2 className="h-5 w-5" />
           <span className="sr-only">Customers</span>
@@ -27,10 +28,7 @@ export default function Sidebar() {
         </SidebarItem>
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-        <SidebarItem path="/dashboard/settings" title="Settings">
-          <Settings className="h-5 w-5" />
-          <span className="sr-only">Settings</span>
-        </SidebarItem>
+        <Logout cursor="pointer" className="h-7 w-7" />
       </nav>
     </aside>
   );

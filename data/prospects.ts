@@ -3,11 +3,11 @@
 import { verifySession } from "@/lib/session";
 import { apiGetReq } from "@/lib/utils";
 
-export const listProspects = async () => {
+export const listProspects = async ({ page }: { page?: number }) => {
   try {
     const session = await verifySession();
     return apiGetReq({
-      uri: "/prospect",
+      uri: `/prospect/?limit=5&page=${page}`,
       accesToken: session?.user.accessToken,
     });
   } catch (err) {

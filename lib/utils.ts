@@ -86,3 +86,8 @@ export async function apiPostReq(values: {
     return { message: "Something happens. Please try again later" };
   }
 }
+
+export const validateEmail = (email?: string): boolean => {
+  const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return emailRegex.test(email ?? "");
+};

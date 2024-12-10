@@ -29,8 +29,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { userProfile } from "@/helpers/constants";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Dashboard() {
+  useEffect(() => {
+    redirect("/dashboard/prospects");
+  }, []);
+
   return (
     <div className="w-full gap-5 flex flex-col">
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">

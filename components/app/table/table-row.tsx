@@ -9,8 +9,13 @@ import {
 import { MoreHorizontal, PenBox, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PropsWithChildren } from "react";
+import { MessageText } from "iconsax-react";
+import { validateEmail } from "@/lib/utils";
 
-export const CustomTableRow = ({ children }: PropsWithChildren) => {
+export const CustomTableRow = ({
+  children,
+  prospect,
+}: PropsWithChildren & { prospect?: Prospect }) => {
   return (
     <TableRow>
       {children}
@@ -24,6 +29,16 @@ export const CustomTableRow = ({ children }: PropsWithChildren) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            {prospect && validateEmail(prospect.p_email) && (
+              <DropdownMenuItem>
+                <a
+                  className="flex items-center gap-2"
+                  href={`mailto:${prospect.p_email}`}
+                >
+                  <MessageText /> Send Email
+                </a>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem>
               <PenBox /> Edit
             </DropdownMenuItem>
