@@ -13,28 +13,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Google } from "iconsax-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, MouseEvent } from "react";
+import { FormEvent, MouseEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { errorToast, okToast } from "@/lib/utils";
+import SpinLoader from "@/components/app/spin-loader";
 
 const SignInPage = () => {
+  const [authenticating, setAuthenticating] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
     try {
+      event.preventDefault();
+      setAuthenticating(true);
       const formData = new FormData(event.currentTarget);
       const res = await signIn("credentials", {
         email: formData.get("email"),
         password: formData.get("password"),
         redirect: false,
       });
+      setAuthenticating(false);
       if (res?.error && res.status === 401) {
         return errorToast("Invalid credentials");
       }
       okToast("Logged in successfuly");
       return router.push("/");
     } catch (err) {
+      setAuthenticating(false);
       console.error(err);
     }
   };
@@ -84,7 +89,7 @@ const SignInPage = () => {
               />
             </div>
             <Button type="submit" className="w-full">
-              Sign In
+              {authenticating && <SpinLoader />} Sign In
             </Button>
             <Button
               onClick={handleGoogleLogin}
